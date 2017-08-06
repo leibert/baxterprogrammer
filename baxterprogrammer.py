@@ -12,6 +12,7 @@ from baxter_interface import CHECK_VERSION
 
 waypoints = []
 current_point = 0
+movement_incr = 0.1
 
 
 
@@ -76,47 +77,55 @@ def map_keyboard():
     grip_left = baxter_interface.Gripper('left', CHECK_VERSION)
     grip_right = baxter_interface.Gripper('right', CHECK_VERSION)
     lj = left.joint_names()
-    rj = right.joint_names()  
+    rj = right.joint_names() 
+    
+    global movement_incr
 
-    def set_j(limb, joint_name, delta):
+    def set_j(limb, joint_name, direction):
         current_position = limb.joint_angle(joint_name)
+        if direction == 1:
+	  delta = movement_incr
+	else:
+	  delta = 0- movement_incr
+        
         joint_command = {joint_name: current_position + delta}
+        
         limb.set_joint_positions(joint_command)
 
     bindings = {
     #   key: (function, args, description)
-        'Q': (set_j, [left, lj[0], 0.1], "left_s0 increase"),
-        'q': (set_j, [left, lj[0], -0.1], "left_s0 decrease"),
-        'W': (set_j, [left, lj[1], 0.1], "left_s1 increase"),
-        'w': (set_j, [left, lj[1], -0.1], "left_s1 decrease"),
-        'E': (set_j, [left, lj[2], 0.1], "left_e0 increase"),
-        'e': (set_j, [left, lj[2], -0.1], "left_e0 decrease"),
-        'R': (set_j, [left, lj[3], 0.1], "left_e1 increase"),
-        'r': (set_j, [left, lj[3], -0.1], "left_e1 decrease"),
-        'T': (set_j, [left, lj[4], 0.1], "left_w0 increase"),
-        't': (set_j, [left, lj[4], -0.1], "left_w0 decrease"),
-        'Y': (set_j, [left, lj[5], 0.1], "left_w1 increase"),
-        'y': (set_j, [left, lj[5], -0.1], "left_w1 decrease"),
-        'U': (set_j, [left, lj[6], 0.1], "left_w2 increase"),
-        'u': (set_j, [left, lj[6], -0.1], "left_w2 decrease"),
+        'Q': (set_j, [left, lj[0], 1], "left_s0 increase"),
+        'q': (set_j, [left, lj[0], -1], "left_s0 decrease"),
+        'W': (set_j, [left, lj[1], 1], "left_s1 increase"),
+        'w': (set_j, [left, lj[1], -1], "left_s1 decrease"),
+        'E': (set_j, [left, lj[2], 1], "left_e0 increase"),
+        'e': (set_j, [left, lj[2], -1], "left_e0 decrease"),
+        'R': (set_j, [left, lj[3], 1], "left_e1 increase"),
+        'r': (set_j, [left, lj[3], -1], "left_e1 decrease"),
+        'T': (set_j, [left, lj[4], 1], "left_w0 increase"),
+        't': (set_j, [left, lj[4], -1], "left_w0 decrease"),
+        'Y': (set_j, [left, lj[5], 1], "left_w1 increase"),
+        'y': (set_j, [left, lj[5], -1], "left_w1 decrease"),
+        'U': (set_j, [left, lj[6], 1], "left_w2 increase"),
+        'u': (set_j, [left, lj[6], -1], "left_w2 decrease"),
         '[': (grip_left.close, [], "left: gripper close"),
         '{': (grip_left.open, [], "left: gripper open"),
         'p': (grip_left.calibrate, [], "left: gripper calibrate"),
 
-        'A': (set_j, [right, rj[0], 0.1], "right_s0 increase"),
-        'a': (set_j, [right, rj[0], -0.1], "right_s0 decrease"),
-        's': (set_j, [right, rj[1], 0.1], "right_s1 increase"),
-        'S': (set_j, [right, rj[1], -0.1], "right_s1 decrease"),
-        'd': (set_j, [right, rj[2], 0.1], "right_e0 increase"),
-        'D': (set_j, [right, rj[2], -0.1], "right_e0 decrease"),
-        'f': (set_j, [right, rj[3], 0.1], "right_e1 increase"),
-        'F': (set_j, [right, rj[3], -0.1], "right_e1 decrease"),
-        'g': (set_j, [right, rj[4], 0.1], "right_w0 increase"),
-        'G': (set_j, [right, rj[4], -0.1], "right_w0 decrease"),
-        'h': (set_j, [right, rj[5], 0.1], "right_w1 increase"),
-        'H': (set_j, [right, rj[5], -0.1], "right_w1 decrease"),
-        'J': (set_j, [right, rj[6], 0.1], "right_w2 increase"),
-        'j': (set_j, [right, rj[6], -0.1], "right_w2 decrease"),
+        'A': (set_j, [right, rj[0], 1], "right_s0 increase"),
+        'a': (set_j, [right, rj[0], -1], "right_s0 decrease"),
+        's': (set_j, [right, rj[1], 1], "right_s1 increase"),
+        'S': (set_j, [right, rj[1], -1], "right_s1 decrease"),
+        'd': (set_j, [right, rj[2], 1], "right_e0 increase"),
+        'D': (set_j, [right, rj[2], -1], "right_e0 decrease"),
+        'f': (set_j, [right, rj[3], 1], "right_e1 increase"),
+        'F': (set_j, [right, rj[3], -1], "right_e1 decrease"),
+        'g': (set_j, [right, rj[4], 1], "right_w0 increase"),
+        'G': (set_j, [right, rj[4], -1], "right_w0 decrease"),
+        'h': (set_j, [right, rj[5], 1], "right_w1 increase"),
+        'H': (set_j, [right, rj[5], -1], "right_w1 decrease"),
+        'J': (set_j, [right, rj[6], 1], "right_w2 increase"),
+        'j': (set_j, [right, rj[6], -1], "right_w2 decrease"),
         ';': (grip_right.close, [], "right: gripper close"),
         ':': (grip_right.open, [], "right: gripper open"),
         'l': (grip_right.calibrate, [], "right: gripper calibrate"),
@@ -179,13 +188,34 @@ def map_keyboard():
             
             elif c == '.':
                 nextWaypoint()
+            
+            elif c == 'm':
+		lastWaypoint()
 
             elif c == '(':
-                moveLeftNeutral()
+                left.move_to_neutral()
 
             elif c == ')':
-                moveRightNeutral()
-
+                right.move_to_neutral()
+	    
+	    elif c == '|':
+		global waypoints
+		waypoints=[]
+	    
+	    elif c == '=':
+		print ("movement increment is:"),
+		print (movement_incr)
+		
+	    elif c == '+':
+		if movement_incr < .4:
+		  movement_incr *= 2
+		print ("movement increment is:"),
+		print (movement_incr)
+		
+	    elif c == '-':
+		movement_incr /= 2
+		print ("movement increment is:"),
+		print (movement_incr)
 
             else:
                 print ("key bindings: ")
@@ -199,8 +229,10 @@ def map_keyboard():
                 print ("  m: Latest")
                 print ("  x: Execute Waypoints")
                 print ("  v: Import Waypoints")
+                print ("  n: Write Waypoints to File")
                 print ("  (: Left to Neutral")
                 print ("  ): Right to Neutral")
+                print ("  |: Right to Neutral")
                 
                 for key, val in sorted(bindings.items(),
                                         key=lambda x: x[1][2]):
@@ -211,28 +243,29 @@ def map_keyboard():
     
 
 
-def moveLeftNeutral():
-    pass
-
-def moveRightNeutral():
-    pass
-
 def nextWaypoint():
+    global current_point
     if current_point + 1 > waypoints.count:
         print ("END OF WAYPOINTS")
     else:
-        current_point =+ 1
+        current_point += 1
 
 def prevWaypoint():
+    global current_point
     if current_point - 1 < 0:
         print ("START OF WAYPOINTS")
     else:
-        current_point =- 1
+        current_point -= 1
+
+def lastWaypoint():
+    global current_point
+    current_point = waypoints.count
+    #print ("AT LAST WAYPOINTS")
 
 
 def saveWaypoint(right,left):
     waypoint={'right':right, 'left':left}
-    waypoints.append(waypoint)
+    waypoints.append(str(waypoint))
     print ("waypoint saved")
     
 def writeWaypoints():
@@ -258,8 +291,9 @@ def writeWaypoints():
 
 
 def openWaypoints():
-    global waypoints
+    global waypoints, current_point
     waypoints=[]
+    current_point=0
     
     routine = raw_input("Enter routine name: ")
     path = '/home/ruser/pizza/'+routine+'.dat'
@@ -284,7 +318,10 @@ def execWaypoint():
     grip_left = baxter_interface.Gripper('left', CHECK_VERSION)
     grip_right = baxter_interface.Gripper('right', CHECK_VERSION)
     lj = left.joint_names()
-    rj = right.joint_names()  
+    rj = right.joint_names() 
+    
+    right.set_command_timeout(5)
+    left.set_command_timeout(5)
 
 
     wpointstring = waypoints[current_point]
@@ -304,13 +341,23 @@ def execWaypoint():
             print (item[1])
             pointdict[item[0]]=item[1]
         right.set_joint_positions(pointdict)
+    
+    if 'left' in wpoint:
+        pointdict={}
+        print (wpoint['left'])
+        for item in wpoint['left']:
+            print (">"),
+            print (item[1])
+            pointdict[item[0]]=item[1]
+        left.set_joint_positions(pointdict)
 
     #if right exists
         #break out angle
     #if left exists
         #break out angle
     
-    
+    global current_point
+    current_point += 1
     
     
 
